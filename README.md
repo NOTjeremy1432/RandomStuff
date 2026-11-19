@@ -1,1 +1,1 @@
-Bruh i dont even know :)
+A collection of the Random things I (and ChatGPT) has made;
