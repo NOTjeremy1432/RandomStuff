@@ -26,7 +26,7 @@ public:
         name = Name;
     }
 
-    string getName(){
+    string getName() const {
         return name;
     }
 
@@ -91,9 +91,11 @@ public:
    friend ostream& operator<<(ostream& out, const Matrix& matrix){ 
 
         if(matrix.data.empty()){
-            out << "No Data in Matrix" << '\n';
+            out << "No Data in Matrix: "<< matrix.getName() << '\n';
             return out; 
         }
+
+        out << "Name: " << matrix.getName() << endl;
         
         for(int row = 0; row < matrix.getRows(); row ++){
             for(int col = 0; col < matrix.getColumns(); col++){
