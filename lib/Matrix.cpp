@@ -5,6 +5,7 @@ using namespace std;
 
 #include <vector>
 #include <string>
+#include <ostream>
 
 using MatrixRaw = vector<vector<double>>;
 
@@ -29,12 +30,12 @@ public:
         return name;
     }
 
-    int getRows(){
+    int getRows() const {
         if(data.empty()) throw "GetRows Error data is empty";
         return data.size();
     }
     
-    int getColumns(){
+    int getColumns() const {
         if(data.empty()) throw "GetRows Error data is empty";
         return data[0].size();
     }
@@ -86,6 +87,22 @@ public:
         this->setData(right);
         return *this; 
 
+    }
+   friend ostream& operator<<(ostream& out, const Matrix& matrix){ 
+
+        if(matrix.data.empty()){
+            out << "No Data in Matrix" << '\n';
+            return out; 
+        }
+        
+        for(int row = 0; row < matrix.getRows(); row ++){
+            for(int col = 0; col < matrix.getColumns(); col++){
+                out << matrix.data[row][col] << " ";
+
+            }
+            out << "\n";
+        }
+        return out;
     }
 
 };
