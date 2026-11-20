@@ -6,7 +6,6 @@ using namespace std;
 #include <vector>
 #include <string>
 #include <ostream>
-#include <cmath>
 
 using MatrixRaw = vector<vector<double>>;
 
@@ -342,7 +341,7 @@ MatrixRaw DetachBack(int colCuttof,const MatrixRaw& data){
         result.push_back(temprow);
         temprow.clear();
     }
-
+    return result;
 }
 
 #endif

@@ -29,8 +29,12 @@ int main() {
     cout << B; 
 
    B = GaussianJordanElimination(B.getData());
+(
+   B = DetachBack(3, B.getData()));
 
    cout << B;
+
+    cout << B * A; 
 
             }
         catch(string error) {
