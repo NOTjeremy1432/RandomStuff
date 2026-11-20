@@ -225,7 +225,7 @@ ostream& operator<<(ostream& out, const MatrixRaw& data){
         return out;
     }
 
-    static void SingleRowScalar(int row, double scale,MatrixRaw& data){
+static void SingleRowScalar(int row, double scale,MatrixRaw& data){
 
         if(data.empty()) throw "SingleRowScalar error empty matrix";
 
@@ -234,7 +234,7 @@ ostream& operator<<(ostream& out, const MatrixRaw& data){
         }
     }
     // RowB = RowB - (RowA * scale)
-    static void RowRowAddition(int rowA, int rowB, double scale, MatrixRaw& data){
+static void RowRowAddition(int rowA, int rowB, double scale, MatrixRaw& data){
 
         if(data.empty()) throw "RowRowSubraction error empty matrix";
 
@@ -243,16 +243,17 @@ ostream& operator<<(ostream& out, const MatrixRaw& data){
         }
 
     }
-    static void RowSwap(int rowA, int rowB,MatrixRaw& data){
+    
+static void RowSwap(int rowA, int rowB,MatrixRaw& data){
         vector<double> temp;
         temp = data[rowA];
         data[rowA] = data[rowB];
         data[rowB] = temp;
     }
 
-    MatrixRaw GaussianJordanElimination(const MatrixRaw& data){
+MatrixRaw GaussianJordanElimination(const MatrixRaw& data){
         if(data.empty()) throw "GaussianJordanElimination error emtpy matrix";
-//Created with ChaGPT
+    //Created with ChaGPT
        MatrixRaw result = data;
 
     int rows = result.size();
@@ -297,8 +298,51 @@ ostream& operator<<(ostream& out, const MatrixRaw& data){
     }
 
     return result;
-// End of AI geneation 
-}
+    // End of AI geneation 
+    }
 
+
+MatrixRaw DetachFront(int ColCuttoff,const MatrixRaw& data){
+   
+    if(data.empty()) throw "DetachFront error empty data";
+
+    if(data[0].size() < ColCuttoff) throw "DetachFront error invalid Column cuttoff size";
+   
+   
+    MatrixRaw result;
+    int totalrows = data.size();
+    vector<double> temprow;
+
+        for(int row = 0; row < totalrows; row++){
+            for(int col = 0; col < ColCuttoff; col++){
+                temprow.push_back(data[row][col]); 
+            }
+            result.push_back(temprow);
+            temprow.clear();
+        }
+        return result; 
+    }
+
+MatrixRaw DetachBack(int colCuttof,const MatrixRaw& data){
+    
+    if(data.empty()) throw "DetachBack error empy data";
+
+    if(colCuttof > data[0].size()) throw "DetachBack error invalid Column cuttof size";
+
+    MatrixRaw result; 
+    int totalrows = data.size();
+    int EndCol = data[0].size();
+    vector<double> temprow;
+
+
+    for(int row = 0; row < totalrows; row++){
+        for(int col = colCuttof; col < EndCol; col++){
+            temprow.push_back(data[row][col]);
+        }
+        result.push_back(temprow);
+        temprow.clear();
+    }
+
+}
 
 #endif
