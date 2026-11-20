@@ -9,6 +9,8 @@ using namespace std;
 
 using MatrixRaw = vector<vector<double>>;
 
+static double EPSILON = .00000000000001;
+
 
 class Matrix
 {
@@ -78,6 +80,7 @@ public:
             for(int col = 0; col < B.getColumns(); col++){
                 for(int x = 0; x < A.getColumns(); x++){
                     temp += A.data[row][x] * B.data[x][col];
+                    if(abs(temp) < EPSILON) temp = 0.0;
                 }
                 temprow.push_back(temp);
                 temp = 0;
@@ -105,6 +108,7 @@ public:
             for(int col = 0; col < B[0].size(); col++){
                 for(int x = 0; x < A[0].size(); x++){
                     temp += A[row][x] * B[x][col];
+                    if(abs(temp) < EPSILON) temp = 0.0;
                 }
                 temprow.push_back(temp);
                 temp = 0;
@@ -299,7 +303,6 @@ MatrixRaw GaussianJordanElimination(const MatrixRaw& data){
     return result;
     // End of AI geneation 
     }
-
 
 MatrixRaw DetachFront(int ColCuttoff,const MatrixRaw& data){
    
