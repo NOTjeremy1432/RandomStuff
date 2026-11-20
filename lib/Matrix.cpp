@@ -6,6 +6,7 @@ using namespace std;
 #include <vector>
 #include <string>
 #include <ostream>
+#include <cmath>
 
 using MatrixRaw = vector<vector<double>>;
 
@@ -181,6 +182,123 @@ Matrix::~Matrix()
 {
 }
 
+MatrixRaw Identity(int x){
+    MatrixRaw Identity(x, vector<double>(x, 0.0));
+    for(int i = 0; i < x; i++){
+        Identity[i][i] = 1.0;
+    }
+    return Identity; 
+}
+
+MatrixRaw Append(const MatrixRaw& A,const MatrixRaw& B) {
+    if(A.empty() || B.empty()) throw "Append Error Matrix empty";
+    if(A.size() != B.size()) throw "Append Error Diffrent Row number";
+
+    MatrixRaw result; 
+    vector<double> tempRow;
+        for(int row = 0; row < A.size(); row++){
+            for(int col = 0; col < A[0].size(); col++){
+                tempRow.push_back(A[row][col]);
+            }
+            for(int col = 0; col < B[0].size(); col ++){
+                tempRow.push_back(B[row][col]);
+            }
+            result.push_back(tempRow);
+            tempRow.clear();
+        }
+        return result; 
+
+
+}
+
+ostream& operator<<(ostream& out, const MatrixRaw& data){ 
+
+    
+        
+        for(int row = 0; row < data.size(); row ++){
+            for(int col = 0; col < data[0].size(); col++){
+                out << data[row][col] << " ";
+
+            }
+            out << "\n";
+        }
+        return out;
+    }
+
+    static void SingleRowScalar(int row, double scale,MatrixRaw& data){
+
+        if(data.empty()) throw "SingleRowScalar error empty matrix";
+
+        for(int col = 0; col < data[row].size(); col++){
+            data[row][col] *= scale; 
+        }
+    }
+    // RowB = RowB - (RowA * scale)
+    static void RowRowAddition(int rowA, int rowB, double scale, MatrixRaw& data){
+
+        if(data.empty()) throw "RowRowSubraction error empty matrix";
+
+        for(int col = 0; col < data[rowA].size(); col++){
+            data[rowB][col] += (data[rowA][col] * scale);
+        }
+
+    }
+    static void RowSwap(int rowA, int rowB,MatrixRaw& data){
+        vector<double> temp;
+        temp = data[rowA];
+        data[rowA] = data[rowB];
+        data[rowB] = temp;
+    }
+
+    MatrixRaw GaussianJordanElimination(const MatrixRaw& data){
+        if(data.empty()) throw "GaussianJordanElimination error emtpy matrix";
+//Created with ChaGPT
+       MatrixRaw result = data;
+
+    int rows = result.size();
+    int cols = result[0].size();
+
+    int pivotRow = 0;
+
+    for (int pivotCol = 0; pivotCol < cols; pivotCol++) {
+
+        if (pivotRow >= rows)
+            break;
+
+        // Find a nonzero pivot
+        int swapRow = pivotRow;
+
+        while (swapRow < rows && result[swapRow][pivotCol] == 0) {
+            swapRow++;
+        }
+
+        // No pivot exists in this column
+        if (swapRow == rows)
+            continue;
+
+        // Swap rows if necessary
+        if (swapRow != pivotRow) {
+            RowSwap(pivotRow, swapRow, result);
+        }
+
+        // Normalize pivot row
+        SingleRowScalar(pivotRow, 1.0 / result[pivotRow][pivotCol], result);
+
+        // Eliminate pivot column from every other row
+        for (int row = 0; row < rows; row++) {
+
+            if (row == pivotRow)
+                continue;
+
+            RowRowAddition(pivotRow, row, -result[row][pivotCol], result);
+        }
+
+        pivotRow++;
+    }
+
+    return result;
+// End of AI geneation 
+}
 
 
 #endif
