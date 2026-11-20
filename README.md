@@ -1,3 +1,3 @@
 A collection of the Random things I have made;
-ChatGpt helped; 
+ChatGPT helped; 
 i aint that smart; 
