@@ -65,8 +65,63 @@ public:
         return data; 
     }
 
+    static MatrixRaw Multiply(const Matrix& A, const Matrix& B){
+       
+        if(A.getColumns() != B.getRows()){
+            throw "Matrix size Missmatch";
+        }
+        MatrixRaw result; 
+        vector<double> temprow;
+        double temp = 0; 
+
+        for(int row = 0; row < A.getRows(); row++){
+            for(int col = 0; col < B.getColumns(); col++){
+                for(int x = 0; x < A.getColumns(); x++){
+                    temp += A.data[row][x] * B.data[x][col];
+                }
+                temprow.push_back(temp);
+                temp = 0;
+            }
+            result.push_back(temprow);
+            temprow.clear();
+            
+        }
+        return result; 
+
+    }
+
+    static MatrixRaw Multiply(const MatrixRaw& A, const MatrixRaw& B) {
+
+        if(A.empty() || B.empty()) throw "Multiply MatrixRaw empty Matrix";
+       
+        if(A[0].size() != B.size()){
+            throw "Matrix size Missmatch";
+        }
+        MatrixRaw result; 
+        vector<double> temprow;
+        double temp = 0; 
+
+        for(int row = 0; row < A.size(); row++){
+            for(int col = 0; col < B[0].size(); col++){
+                for(int x = 0; x < A[0].size(); x++){
+                    temp += A[row][x] * B[x][col];
+                }
+                temprow.push_back(temp);
+                temp = 0;
+            }
+            result.push_back(temprow);
+            temprow.clear();
+            
+        }
+        return result; 
+
+    }
+
+
+   
+
 //opearator overloadings
-public:
+
 
     Matrix& operator=(const Matrix& right) {
 
@@ -75,9 +130,11 @@ public:
         if(right.data.empty()) throw "operator= error empty Data";
 
         this->setData(right);
+        this->setName(right.getName());
         return *this; 
 
     }
+
      Matrix& operator=(const MatrixRaw& right) {
 
         if(this->data == right) return *this;
@@ -88,6 +145,7 @@ public:
         return *this; 
 
     }
+
    friend ostream& operator<<(ostream& out, const Matrix& matrix){ 
 
         if(matrix.data.empty()){
@@ -107,6 +165,11 @@ public:
         return out;
     }
 
+    MatrixRaw operator*(const Matrix& other) const {
+        return Multiply(data, other.data);
+    }
+
+
 };
 
 Matrix::Matrix(/* args */)
@@ -117,10 +180,6 @@ Matrix::Matrix(/* args */)
 Matrix::~Matrix()
 {
 }
-
-
-
-
 
 
 

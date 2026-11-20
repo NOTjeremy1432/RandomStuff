@@ -10,6 +10,11 @@ int main() {
                 };
     Matrix A; 
     A = test1;
+    A.setName("Test1");
     cout << "cout test" << endl;
     cout << A;
+
+    A = A * A;
+    cout << A; 
+    return 0;
 }
