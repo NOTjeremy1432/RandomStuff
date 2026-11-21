@@ -6,6 +6,7 @@ using namespace std;
 #include <vector>
 #include <string>
 #include <ostream>
+#include <cmath>
 
 using MatrixRaw = vector<vector<double>>;
 
@@ -80,8 +81,9 @@ public:
             for(int col = 0; col < B.getColumns(); col++){
                 for(int x = 0; x < A.getColumns(); x++){
                     temp += A.data[row][x] * B.data[x][col];
-                    if(abs(temp) < EPSILON) temp = 0.0;
+                    
                 }
+                if(abs(temp) < EPSILON) temp = 0.0;
                 temprow.push_back(temp);
                 temp = 0;
             }
@@ -108,8 +110,9 @@ public:
             for(int col = 0; col < B[0].size(); col++){
                 for(int x = 0; x < A[0].size(); x++){
                     temp += A[row][x] * B[x][col];
-                    if(abs(temp) < EPSILON) temp = 0.0;
+                    
                 }
+                if(abs(temp) < EPSILON) temp = 0.0;
                 temprow.push_back(temp);
                 temp = 0;
             }
@@ -174,7 +177,7 @@ public:
     }
 
 
-};
+    };
 
 Matrix::Matrix(/* args */)
 {
@@ -216,7 +219,7 @@ MatrixRaw Append(const MatrixRaw& A,const MatrixRaw& B) {
 
 ostream& operator<<(ostream& out, const MatrixRaw& data){ 
 
-    
+    if(data.empty()) return out << "Empty matrix";
         
         for(int row = 0; row < data.size(); row ++){
             for(int col = 0; col < data[0].size(); col++){
@@ -243,6 +246,7 @@ static void RowRowAddition(int rowA, int rowB, double scale, MatrixRaw& data){
 
         for(int col = 0; col < data[rowA].size(); col++){
             data[rowB][col] += (data[rowA][col] * scale);
+            if(abs(data[rowB][col]) < EPSILON) data[rowB][col] = 0;
         }
 
     }
@@ -257,7 +261,7 @@ static void RowSwap(int rowA, int rowB,MatrixRaw& data){
 MatrixRaw GaussianJordanElimination(const MatrixRaw& data){
         if(data.empty()) throw "GaussianJordanElimination error emtpy matrix";
     //Created with ChaGPT
-       MatrixRaw result = data;
+    MatrixRaw result = data;
 
     int rows = result.size();
     int cols = result[0].size();
@@ -272,7 +276,7 @@ MatrixRaw GaussianJordanElimination(const MatrixRaw& data){
         // Find a nonzero pivot
         int swapRow = pivotRow;
 
-        while (swapRow < rows && result[swapRow][pivotCol] == 0) {
+        while (swapRow < rows && abs(result[swapRow][pivotCol]) <= EPSILON) {
             swapRow++;
         }
 
@@ -345,6 +349,136 @@ MatrixRaw DetachBack(int colCuttof,const MatrixRaw& data){
         temprow.clear();
     }
     return result;
+}
+
+double Determinat2x2(const MatrixRaw& data){
+
+    if(data.empty()) throw "Determinatnt2x2 error empty data;";
+    if(data.size() != data[0].size()) throw "Determinatn2x2 matrix not square";
+    if(data.size() != 2) throw "Determinatn2x2 Matrix not 2x2"; 
+
+    return (data[0][0]*data[1][1] - data[0][1]*data[1][0]);
+}
+
+double Determinat2x2(const MatrixRaw& data,int row, int col){
+
+    if(data.empty()) throw "Determinatnt2x2 error empty data;";
+
+    return (data[0+row][0+col]*data[1+row][1+col] - data[0+row][1+col]*data[1+row][0+col]);
+}
+
+double LaplaceExpansion(const MatrixRaw& data, int layer, double Scalar){
+    // made by chatgpt
+    int n = data.size();
+
+    if (n == 1)
+        return Scalar * data[0][0];
+
+    double det = 0;
+
+    for (int col = 0; col < n; col++)
+    {
+        MatrixRaw minor;
+
+        // Construct the minor matrix
+        for (int i = 0; i < n; i++)
+        {
+            if (i == layer)
+                continue;
+
+            vector<double> row;
+
+            for (int j = 0; j < n; j++)
+            {
+                if (j == col)
+                    continue;
+
+                row.push_back(data[i][j]);
+            }
+
+            minor.push_back(row);
+        }
+
+        // Cofactor sign
+        double sign = ((layer + col) % 2 == 0) ? 1 : -1;
+
+        // Recursive expansion
+        det += LaplaceExpansion(
+            minor,
+            0,
+            Scalar * sign * data[layer][col]
+        );
+    }
+
+    return det; 
+    
+
+}
+
+double DeterminantSlow(const MatrixRaw& data){\
+    if(data.empty()) throw "Determinat error empy matrix";
+    if(data.size() != data[0].size()) throw "Determinant error non-square matrix";
+
+    if(data.size() == 1) return data[0][0];
+
+    if(data.size() == 2) return Determinat2x2(data);
+
+    return LaplaceExpansion(data, 0 ,1);
+
+}
+
+double DeterminatFast(const MatrixRaw& data){
+ // AI Generated
+    MatrixRaw result = data;
+
+    int rows = result.size();
+int cols = result[0].size();
+
+if (rows != cols)
+    throw invalid_argument("Matrix must be square");
+
+double determinant = 1.0;
+int swapCount = 0;
+
+for (int pivotCol = 0; pivotCol < cols; pivotCol++) {
+
+    // Find a nonzero pivot
+    int swapRow = pivotCol;
+
+    while (swapRow < rows &&
+           abs(result[swapRow][pivotCol]) <= EPSILON) {
+        swapRow++;
+    }
+
+    // No pivot exists: determinant is zero
+    if (swapRow == rows)
+        return 0.0;
+
+    // Swap rows if necessary
+    if (swapRow != pivotCol) {
+        RowSwap(pivotCol, swapRow, result);
+        swapCount++;
+    }
+
+    // Eliminate entries below the pivot
+    for (int row = pivotCol + 1; row < rows; row++) {
+
+        double factor = result[row][pivotCol] /
+                        result[pivotCol][pivotCol];
+
+        RowRowAddition(pivotCol, row, -factor, result);
+    }
+
+    // Multiply diagonal elements
+    determinant *= result[pivotCol][pivotCol];
+}
+
+// Account for row swaps
+if (swapCount % 2 != 0)
+    determinant *= -1;
+
+return determinant;
+
 }
 
 #endif
