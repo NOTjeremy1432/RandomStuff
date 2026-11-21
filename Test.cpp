@@ -15,26 +15,25 @@ int main() {
     A.setName("Test1");
     cout << "cout test" << endl;
     cout << A;
+
+    A = Append(A.getData(), Identity(3));
+    A.setName("A append with Identy");
     cout << A; 
 
-    cout << "Append and Identy test" << endl;
+    A = GaussianJordanElimination(A.getData());
+    A.setName("GaussianJordan Elimination");
+    cout << A;
 
-    Matrix B;
+    A = DetachBack(3, A.getData());
+    A.setName("Detach the Back");
+    cout << A;
 
+    double det; 
 
-    B = Append(A.getData(), Identity(3));
-    
-    B.setName("A + Identity");
-
-    cout << B; 
-
-   B = GaussianJordanElimination(B.getData());
-(
-   B = DetachBack(3, B.getData()));
-
-   cout << B;
-
-    cout << B * A; 
+    det = DeterminantSlow(A.getData());
+    cout << "Determint via Laplace Expansion: " << det << endl;
+    det = DeterminatFast(A.getData());
+    cout << "Determinant via Gauusian Elimation: " << det << endl;
 
             }
         catch(string error) {
