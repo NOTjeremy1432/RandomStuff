@@ -518,4 +518,24 @@ MatrixRaw Invert(const MatrixRaw& data){
 
     }
 
+MatrixRaw Transpose(const MatrixRaw& data){
+    
+    if(data.empty()) throw "Transpose Error emtpy data";
+    
+    MatrixRaw result; 
+    vector<double> temprow; 
+
+    int rows = data.size();
+    int cols = data[0].size();
+
+    for(int y = 0; y < cols; y++){
+        for(int x = 0; x < rows; x++){
+            temprow.push_back(data[x][y]);
+        }
+        result.push_back(temprow);
+        temprow.clear();
+    }
+    return result;
+}
+
 #endif
