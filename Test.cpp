@@ -10,6 +10,9 @@ int main() {
                 {4,5,6},
                 {7,8,8}
                 };
+
+    MatrixRaw nonsquare = {{1,2,3}};
+
     Matrix A; 
     A = test1;
     A.setName("Test1");
@@ -18,6 +21,12 @@ int main() {
 
     cout << "Inverted Matrix:" << endl;
     cout << Invert(A.getData());
+
+    cout << "Transpose" << endl << "Before:" << endl;;
+    cout << nonsquare << endl;
+    cout << "After:" << endl;
+    cout << Transpose(nonsquare) << endl;
+
 
     double det; 
 
