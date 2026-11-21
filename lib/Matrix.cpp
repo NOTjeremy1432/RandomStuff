@@ -124,6 +124,21 @@ public:
 
     }
 
+    static MatrixRaw Multiply(const MatrixRaw& A,const double B){
+
+        if(A.empty()) throw "Error Matrix Multiply Scalar Empty Matrix";
+
+        MatrixRaw  temp = A;
+        int rows = A.size();
+        int cols = A[0].size();
+
+        for(int x = 0; x < rows; x++){
+            for(int y = 0; y < cols; y++){
+                temp[x][y] *= B;
+            }
+        }
+        return temp;
+    }
 
    
 
@@ -174,6 +189,12 @@ public:
 
     MatrixRaw operator*(const Matrix& other) const {
         return Multiply(data, other.data);
+    }
+    MatrixRaw operator*(const MatrixRaw& other) const {
+        return Multiply(data, other);
+    }
+    MatrixRaw operator*(const double B) const {
+        return Multiply(data, B);
     }
 
 
@@ -480,5 +501,21 @@ if (swapCount % 2 != 0)
 return determinant;
 
 }
+
+MatrixRaw Invert(const MatrixRaw& data){
+
+    if(data.size() != data[0].size()) throw "Matrix not Square";
+
+    if(DeterminatFast(data) == 0) throw "Matrix not invertable";  
+
+    MatrixRaw Invert = Append(data, Identity(data.size()));
+
+   Invert = GaussianJordanElimination(Invert);
+
+    Invert = DetachBack(Invert.size(), Invert);
+
+    return Invert;
+
+    }
 
 #endif
