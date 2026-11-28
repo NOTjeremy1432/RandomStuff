@@ -1,4 +1,5 @@
 #include "lib/Matrix.cpp"
+#include "lib/Imagething.cpp"
 #include <iostream>
 #include <string>
 using namespace std;
@@ -34,11 +35,15 @@ int main() {
     cout << "Determint via Laplace Expansion: " << det << endl;
     det = DeterminatFast(A.getData());
     cout << "Determinant via Gauusian Elimation: " << det << endl;
+    WriteImage(TestImage(), "test.bmp");
 
             }
         catch(string error) {
             cout << error; 
         }
+
+    
+
 
     return 0;
 }
