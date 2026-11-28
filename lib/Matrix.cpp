@@ -139,7 +139,6 @@ public:
         }
         return temp;
     }
-
    
 
 //opearator overloadings
@@ -190,13 +189,16 @@ public:
     MatrixRaw operator*(const Matrix& other) const {
         return Multiply(data, other.data);
     }
+  
     MatrixRaw operator*(const MatrixRaw& other) const {
         return Multiply(data, other);
     }
+    
     MatrixRaw operator*(const double B) const {
         return Multiply(data, B);
     }
 
+    
 
     };
 
